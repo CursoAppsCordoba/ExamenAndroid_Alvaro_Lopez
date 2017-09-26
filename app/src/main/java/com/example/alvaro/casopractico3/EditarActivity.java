@@ -3,9 +3,11 @@ package com.example.alvaro.casopractico3;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class EditarActivity extends AppCompatActivity implements View.OnClickListener {
     EditText nombre, email, edad;
@@ -35,10 +37,15 @@ public class EditarActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnGuardar:
-                Intent intent2 = new Intent(this, VerActivity.class);
-                intent2.putExtra("contacto", new Contacto(nombre.getText().toString(), email.getText().toString(),  Integer.parseInt(edad.getText().toString())));
-                setResult(RESULT_OK, intent2);
-                finish();
+                if (TextUtils.isEmpty(nombre.getText().toString()) || TextUtils.isEmpty(email.getText().toString()) || TextUtils.isEmpty(edad.getText().toString())) {
+                    Toast.makeText(this, "Todos los campos deben estar rellenos", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent intent2 = new Intent(this, VerActivity.class);
+                    intent2.putExtra("contacto", new Contacto(nombre.getText().toString(), email.getText().toString(),  Integer.parseInt(edad.getText().toString())));
+                    setResult(RESULT_OK, intent2);
+                    finish();
+                }
+
                 break;
             case R.id.btnCancelar:
                 finish();

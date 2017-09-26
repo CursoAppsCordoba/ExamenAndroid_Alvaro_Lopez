@@ -5,12 +5,15 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class AnadirActivity extends AppCompatActivity implements View.OnClickListener{
     private static AlertDialog ventana;
+    EditText nombre, email, edad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +32,14 @@ public class AnadirActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.btnAceptar:
                 Contacto contacto = crearContacto();
 
-                Intent intent = new Intent();
-                intent.putExtra("contacto", contacto);
-                setResult(RESULT_OK, intent);
-                finish();
+                if (contacto != null) {
+                    Intent intent = new Intent();
+                    intent.putExtra("contacto", contacto);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                } else {
+                    Toast.makeText(this, "Todos los campos deben estar rellenos", Toast.LENGTH_LONG).show();
+                }
                 break;
             case R.id.btnCancelar:
                 if (ventana==null) {
@@ -61,10 +68,17 @@ public class AnadirActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     public Contacto crearContacto() {
-        EditText nombre = (EditText) findViewById(R.id.txtNombre);
-        EditText email = (EditText) findViewById(R.id.txtEmail);
-        EditText edad = (EditText) findViewById(R.id.txtEdad);
+        Contacto contacto;
 
-        return new Contacto(nombre.getText().toString(), email.getText().toString(), Integer.parseInt(edad.getText().toString()));
+        nombre = (EditText) findViewById(R.id.txtNombre);
+        email = (EditText) findViewById(R.id.txtEmail);
+        edad = (EditText) findViewById(R.id.txtEdad);
+
+        if (TextUtils.isEmpty(nombre.getText().toString()) || TextUtils.isEmpty(email.getText().toString()) || TextUtils.isEmpty(edad.getText().toString())) {
+            contacto = null;
+        } else {
+            contacto = new Contacto(nombre.getText().toString(), email.getText().toString(), Integer.parseInt(edad.getText().toString()));
+        }
+        return contacto;
     }
 }

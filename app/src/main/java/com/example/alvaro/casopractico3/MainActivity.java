@@ -8,14 +8,15 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     public static final int ALTA = 100;
     public static final int BAJA = 200;
     public static final int LISTAR = 300;
     public static final int EDITAR = 400;
-    private List<Contacto> listaContactos;
+    private Set<Contacto> listaContactos = new HashSet<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button btn3 = (Button)findViewById(R.id.btnVer);
         btn3.setOnClickListener(this);
 
-        listaContactos = new ArrayList<>();
+
 
     }
 
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btnVer:
                 intent = new Intent (this, VerActivity.class);
-                intent.putParcelableArrayListExtra("listado", (ArrayList)listaContactos);
+                intent.putParcelableArrayListExtra("listado", new ArrayList(listaContactos));
                 codigo = LISTAR;
                 break;
         }
@@ -62,9 +63,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case ALTA:
                 if (resultCode == RESULT_OK) {
                     if (data.hasExtra("contacto")) {
-                        Contacto c = (Contacto) data.getParcelableExtra("contacto");
-                        listaContactos.add(c);
-                        Toast.makeText(this, c.getNombre() + " Ha sido guardado", Toast.LENGTH_LONG).show();
+                        Contacto c = data.getParcelableExtra("contacto");
+                        if (listaContactos.add(c)) {
+                            Toast.makeText(this, c.getNombre() + " Ha sido guardado", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(this, "El contacto ya existía.", Toast.LENGTH_LONG).show();
+                        }
                     }
 
                 } else if(resultCode == RESULT_CANCELED) {
@@ -74,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case BAJA:
                 if (resultCode == RESULT_OK) {
                     if (data.hasExtra("contacto")) {
-                        Contacto c = (Contacto) data.getParcelableExtra("contacto");
+                        Contacto c =  data.getParcelableExtra("contacto");
                         Toast.makeText(this,listaContactos.remove(c)?"Se ha borrado un contacto":"No existe un contacto con esos datos", Toast.LENGTH_LONG).show();
                     }
                 } else if(resultCode == RESULT_CANCELED) {
@@ -84,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case LISTAR:
                 if (resultCode == RESULT_OK) {
                     if (data.hasExtra("lista")) {
-                        listaContactos = data.getParcelableExtra("lista");
+                        listaContactos = new HashSet(data.getParcelableArrayListExtra("lista"));
                     }
                 }
                 break;
