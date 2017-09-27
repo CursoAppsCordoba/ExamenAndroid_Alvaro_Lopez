@@ -28,20 +28,25 @@ public class AnadirActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
+        //switch que controla que botón ha sido pulsado
         switch(v.getId()) {
             case R.id.btnAceptar:
+                //Guardamos un contacto llamando a la función crearContacto
                 Contacto contacto = crearContacto();
 
+                //Si el contacto es diferente a null creamos un intent, lo añadimos y lo mandamos de vuelta junto a RESULT_OK
                 if (contacto != null) {
                     Intent intent = new Intent();
                     intent.putExtra("contacto", contacto);
                     setResult(RESULT_OK, intent);
                     finish();
+                //si el contacto es null muestra un toast
                 } else {
                     Toast.makeText(this, "Todos los campos deben estar rellenos", Toast.LENGTH_LONG).show();
                 }
                 break;
             case R.id.btnCancelar:
+                //si ventana no ha sido inicialiada llama a la función crearVentana
                 if (ventana==null) {
                     ventana=crearVentana();
                 }
@@ -51,8 +56,10 @@ public class AnadirActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     public AlertDialog crearVentana() {
+        //Creamos un alertDialog con dos botones,
         AlertDialog.Builder cuadro = new AlertDialog.Builder(this);
         cuadro.setMessage("¿Seguro que desea salir sin guardar?");
+        //uno de aceptar que cerrará la actividad mandando RESULT_CANCELED
         cuadro.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
             @Override
@@ -62,6 +69,7 @@ public class AnadirActivity extends AppCompatActivity implements View.OnClickLis
                 finish();
             }
         });
+        //y otro de cancelar que no hará nada
         cuadro.setNegativeButton(android.R.string.no, null);
 
         return cuadro.create();
@@ -74,8 +82,10 @@ public class AnadirActivity extends AppCompatActivity implements View.OnClickLis
         email = (EditText) findViewById(R.id.txtEmail);
         edad = (EditText) findViewById(R.id.txtEdad);
 
+        //Si alguno de los campos de texto está vacío establece contacto a null
         if (TextUtils.isEmpty(nombre.getText().toString()) || TextUtils.isEmpty(email.getText().toString()) || TextUtils.isEmpty(edad.getText().toString())) {
             contacto = null;
+        //sino, crea un contacto con lso datos obtenidos de los EditText
         } else {
             contacto = new Contacto(nombre.getText().toString(), email.getText().toString(), Integer.parseInt(edad.getText().toString()));
         }

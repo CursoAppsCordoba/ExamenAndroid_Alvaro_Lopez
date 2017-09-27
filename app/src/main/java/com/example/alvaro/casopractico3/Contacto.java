@@ -96,5 +96,8 @@ public class Contacto implements Parcelable{
         dest.writeInt(edad);
     }
 
-
+    @Override
+    public String toString() {
+        return this.getNombre();
+    }
 }
